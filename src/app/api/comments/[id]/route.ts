@@ -1,16 +1,16 @@
-import { NextResponse } from 'next/server'
-
+import { NextRequest, NextResponse } from 'next/server'
 import Comment from '@/models/comment'
 import { connectDB } from '@/lib/mongodb'
 
-// GET /comments/:id → 댓글 1개 조회
+// GET /comments/:id
 export async function GET(
-  req: Request,
-  { params }: { params: { id: string } }
+  req: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params
     await connectDB()
-    const comment = await Comment.findById(params.id)
+    const comment = await Comment.findById(id)
 
     if (!comment)
       return NextResponse.json(
@@ -24,17 +24,18 @@ export async function GET(
   }
 }
 
-// PATCH /comments/:id → 댓글 수정
+// PATCH /comments/:id
 export async function PATCH(
-  req: Request,
-  { params }: { params: { id: string } }
+  req: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params
     await connectDB()
-    const { comment } = await req.json()
 
+    const { comment } = await req.json()
     const updated = await Comment.findByIdAndUpdate(
-      params.id,
+      id,
       { comment },
       { new: true }
     )
@@ -48,15 +49,16 @@ export async function PATCH(
   }
 }
 
-// DELETE /comments/:id → 댓글 삭제
+// DELETE /comments/:id
 export async function DELETE(
-  req: Request,
-  { params }: { params: { id: string } }
+  req: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params
     await connectDB()
-    const deleted = await Comment.findByIdAndDelete(params.id)
 
+    const deleted = await Comment.findByIdAndDelete(id)
     if (!deleted)
       return NextResponse.json({ message: '댓글 없음' }, { status: 404 })
 
