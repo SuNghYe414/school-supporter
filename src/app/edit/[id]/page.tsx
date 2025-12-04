@@ -1,6 +1,7 @@
 import EditTopicForm from '@/components/EditTopicBtn'
 
-const apiUrl = process.env.API_UR || 'http://localhost:3000'
+const apiUrl =
+  process.env.API_UR || 'https://school-supporter-three.vercel.app/'
 
 const getTopicById = async (id: string) => {
   try {
